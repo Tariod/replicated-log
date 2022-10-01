@@ -1,6 +1,6 @@
 {
   "name": "@replicated-log/slave",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "author": "Tariod <mykhailovdmt@gmail.com>",
   "homepage": "https://github.com/Tariod/replicated-log/packages/slave/#readme",
