@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  master:
+    build: ./packages/master
+    environment:
+      - SLAVE_HOST=slave-1
+      - SLAVE_PORT=3000
+    networks:
+      - external
+      - internal
+    ports:
+      - "3000:3000"
+    depends_on:
+      - slave-1
+  slave-1:
+    build: ./packages/slave
+    environment:
+      - HOST=slave-1
+      - PORT=3000
+    networks:
+      - internal
+
+networks:
+  external:
+  internal:
+    internal: true
