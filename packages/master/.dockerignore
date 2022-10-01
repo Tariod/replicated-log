@@ -25,3 +25,4 @@ lerna-debug.log*
 
 # Environment Files
 .env*
+*config.yaml

@@ -3,9 +3,9 @@ version: "3.9"
 services:
   master:
     build: ./packages/master
-    environment:
-      - SLAVE_HOST=slave-1
-      - SLAVE_PORT=3000
+    volumes:
+      - "./server.config.yaml:/usr/src/replicated-log/server.config.yaml"
+      - "./slaves.config.yaml:/usr/src/replicated-log/slaves.config.yaml"
     networks:
       - external
       - internal
