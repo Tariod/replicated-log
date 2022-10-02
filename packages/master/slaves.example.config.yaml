@@ -1,3 +1,5 @@
 slaves:
   - host: slave-1
     port: 3000
+  - host: slave-2
+    port: 3000

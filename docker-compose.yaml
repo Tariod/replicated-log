@@ -13,10 +13,18 @@ services:
       - "3000:3000"
     depends_on:
       - slave-1
+      - slave-2
   slave-1:
     build: ./packages/slave
     environment:
       - HOST=slave-1
+      - PORT=3000
+    networks:
+      - internal
+  slave-2:
+    build: ./packages/slave
+    environment:
+      - HOST=slave-2
       - PORT=3000
     networks:
       - internal
