@@ -6,9 +6,6 @@ services:
     volumes:
       - "./server.config.yaml:/usr/src/replicated-log/server.config.yaml"
       - "./slaves.config.yaml:/usr/src/replicated-log/slaves.config.yaml"
-    networks:
-      - external
-      - internal
     ports:
       - "3000:3000"
     depends_on:
@@ -19,17 +16,8 @@ services:
     environment:
       - HOST=slave-1
       - PORT=3000
-    networks:
-      - internal
   slave-2:
     build: ./packages/slave
     environment:
       - HOST=slave-2
       - PORT=3000
-    networks:
-      - internal
-
-networks:
-  external:
-  internal:
-    internal: true
