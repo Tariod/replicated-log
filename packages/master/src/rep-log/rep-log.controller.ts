@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
 import { RepLogMsgDto } from './rep-log-msg.dto';
-import { RepLogMsgList } from './rep-log-msg.interface';
+import { RepLogMsg, RepLogMsgList } from './rep-log-msg.interface';
 import { RepLogService } from './rep-log.service';
 
 @Controller()
@@ -11,7 +11,7 @@ export class RepLogController {
 
   @Post()
   @HttpCode(201)
-  public append(@Body() msg: RepLogMsgDto): Observable<void> {
+  public append(@Body() msg: RepLogMsgDto): Observable<RepLogMsg> {
     return this.RepLog.append(msg);
   }
 

@@ -1,11 +1,14 @@
 import { Observable } from 'rxjs';
 
-export function then<T>() {
-  return (observable: Observable<T>) => {
-    return new Observable<void>((subscriber) => {
+export function then<I, O>(value: O) {
+  return (observable: Observable<I>) => {
+    return new Observable<O>((subscriber) => {
       return observable.subscribe({
         error: (err) => subscriber.error(err),
-        complete: () => subscriber.complete(),
+        complete: () => {
+          subscriber.next(value);
+          subscriber.complete();
+        },
       });
     });
   };
