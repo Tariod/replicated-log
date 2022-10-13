@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 
-import { HelloModule } from './hello';
+import { RepLogModule } from './rep-log';
 
 @Module({
-  imports: [HelloModule],
+  imports: [RepLogModule],
   controllers: [],
   providers: [],
 })
