@@ -7,16 +7,16 @@ import SlavesConfigFactory, {
   SlavesConfig,
 } from '../config/slaves.config';
 
-import { HELLO_SLAVE } from './hello.constants';
-import { HelloController } from './hello.controller';
-import { HelloService } from './hello.service';
+import { REP_LOG_SLAVE_CLIENTS } from './rep-log.constants';
+import { RepLogController } from './rep-log.controller';
+import { RepLogService } from './rep-log.service';
 
 @Module({
   imports: [ConfigModule.forFeature(SlavesConfigFactory)],
-  controllers: [HelloController],
+  controllers: [RepLogController],
   providers: [
     {
-      provide: HELLO_SLAVE,
+      provide: REP_LOG_SLAVE_CLIENTS,
       useFactory: (config: ConfigService) => {
         const slaves = config.get<SlavesConfig>(SLAVES_CONFIG);
         return slaves.map(({ host, port }) =>
@@ -28,7 +28,7 @@ import { HelloService } from './hello.service';
       },
       inject: [ConfigService],
     },
-    HelloService,
+    RepLogService,
   ],
 })
-export class HelloModule {}
+export class RepLogModule {}
