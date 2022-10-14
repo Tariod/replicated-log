@@ -11,4 +11,8 @@ export class RepLogService {
     const msg: RepLogMsg = { ...dto };
     this.list.push(msg);
   }
+
+  public get(): RepLogMsgList {
+    return this.list;
+  }
 }

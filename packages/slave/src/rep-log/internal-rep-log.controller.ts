@@ -1,11 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 
-import { RepLogService } from './rep-log.service';
 import { RepLogMsgDto } from './rep-log-msg.dto';
+import { RepLogService } from './rep-log.service';
 
 @Controller()
-export class RepLogTcpController {
+export class InternalRepLogController {
   constructor(private readonly RepLog: RepLogService) {}
 
   @MessagePattern({ cmd: 'append' })

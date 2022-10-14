@@ -14,10 +14,16 @@ services:
   slave-1:
     build: ./packages/slave
     environment:
-      - HOST=slave-1
-      - PORT=3000
+      - HTTP_PORT=3000
+      - TCP_HOST=slave-1
+      - TCP_PORT=3001
+    ports:
+      - "3001:3000"
   slave-2:
     build: ./packages/slave
     environment:
-      - HOST=slave-2
-      - PORT=3000
+      - HTTP_PORT=3000
+      - TCP_HOST=slave-2
+      - TCP_PORT=3001
+    ports:
+      - "3002:3000"

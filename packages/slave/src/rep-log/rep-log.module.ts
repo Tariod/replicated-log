@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 
-import { RepLogTcpController } from './rep-log.tcp.controller';
+import { ExternalRepLogController } from './external-rep-log.controller';
+import { InternalRepLogController } from './internal-rep-log.controller';
 import { RepLogService } from './rep-log.service';
 
 @Module({
   imports: [],
-  controllers: [RepLogTcpController],
+  controllers: [ExternalRepLogController, InternalRepLogController],
   providers: [RepLogService],
 })
 export class RepLogModule {}
