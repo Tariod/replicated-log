@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Observable, merge, of, tap } from 'rxjs';
 
@@ -10,7 +10,8 @@ import { REP_LOG_SLAVE_CLIENTS } from './rep-log.constants';
 
 @Injectable()
 export class RepLogService {
-  private list: RepLogMsgList = [];
+  private readonly list: RepLogMsgList = [];
+  private readonly logger = new Logger(RepLogService.name);
 
   constructor(
     @Inject(REP_LOG_SLAVE_CLIENTS)
@@ -25,7 +26,15 @@ export class RepLogService {
       ...this.slaves.map((slave) => slave.send(pattern, dto)),
     );
 
-    return slaves.pipe(then(msg), tap({ complete: () => this.list.push(msg) }));
+    return slaves.pipe(
+      then(msg),
+      tap({
+        complete: () => {
+          this.list.push(msg);
+          this.logger.debug('Message has been added');
+        },
+      }),
+    );
   }
 
   public get(): Observable<RepLogMsgList> {
