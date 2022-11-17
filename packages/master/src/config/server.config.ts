@@ -1,8 +1,8 @@
 import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 
-import { registerAs } from '@nestjs/config';
 import * as yaml from 'js-yaml';
+import { registerAs } from '@nestjs/config';
 
 export interface ServerConfig {
   port: number;
