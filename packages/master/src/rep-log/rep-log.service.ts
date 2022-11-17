@@ -1,5 +1,5 @@
-import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import {
+  EMPTY,
   MonoTypeOperatorFunction,
   Observable,
   OperatorFunction,
@@ -7,10 +7,13 @@ import {
   merge,
   of,
   pipe,
+  raceWith,
   share,
+  take,
   tap,
   throwError,
 } from 'rxjs';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 import { then } from '../utils';
 
@@ -43,7 +46,10 @@ export class RepLogService {
         );
   }
 
-  public append(dto: RepLogMsgDto): Observable<Record<'id', RepLogMsgId>> {
+  public append(
+    writeConcern: number,
+    dto: RepLogMsgDto,
+  ): Observable<Record<'id', RepLogMsgId>> {
     const pattern = { cmd: 'append' };
     const msg: RepLogMsg = { id: ++this.counter, ...dto };
 
@@ -53,18 +59,27 @@ export class RepLogService {
           .send<Record<'id', RepLogMsg>>(pattern, msg)
           .pipe(map((ack) => ({ slave, ack }))),
       ),
-    ).pipe(
+    );
+
+    return replication.pipe(
       this.logSlaveAppendAck(),
+      this.awaitSlavesAppendAcks(writeConcern),
+      this.commitAppend(msg),
+      map((msg) => ({ id: msg.id })),
+    );
+  }
+
+  private awaitSlavesAppendAcks<T>(
+    writeConcern: number,
+  ): MonoTypeOperatorFunction<T> {
+    const acks = Math.min(Math.max(writeConcern - 1, 0), this.slaves.length);
+    return pipe(
       share({
         resetOnError: false,
         resetOnComplete: false,
         resetOnRefCountZero: false,
       }),
-    );
-
-    return replication.pipe(
-      this.commitAppend(msg),
-      map((msg) => ({ id: msg.id })),
+      acks > 0 ? take(acks) : raceWith(EMPTY),
     );
   }
 
