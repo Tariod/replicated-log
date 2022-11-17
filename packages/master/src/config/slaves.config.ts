@@ -14,7 +14,7 @@ export type SlavesConfig = SlaveConfig[];
 
 export const SLAVES_CONFIG = 'slaves';
 
-const CONFIG_FILE = 'slaves.config.yaml';
+const CONFIG_FILE = 'slave-services.config.yaml';
 const SlavesConfigFactory = registerAs(SLAVES_CONFIG, (): SlavesConfig => {
   const path = resolve(CONFIG_FILE);
   if (!existsSync(path)) {

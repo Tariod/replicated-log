@@ -1,0 +1,9 @@
+server:
+  delays:
+    - 1000
+    - 1500
+  http:
+    port: 3000
+  tcp:
+    host: slave-2
+    port: 3001

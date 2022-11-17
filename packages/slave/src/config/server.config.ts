@@ -1,14 +1,18 @@
-import { SchemaOf, number, object, string } from 'yup';
+import { existsSync, readFileSync } from 'fs';
+import { resolve } from 'path';
+
+import * as yaml from 'js-yaml';
+import { SchemaOf, array, number, object, string } from 'yup';
 import { registerAs } from '@nestjs/config';
 
 export interface ServerConfig {
-  delay: number;
+  delays: number[];
   http: { port: number };
   tcp: { host: string; port: number };
 }
 
 const schema: SchemaOf<ServerConfig> = object({
-  delay: number().default(-1),
+  delays: array(number().positive().integer()).ensure(),
   http: object({
     port: number().default(3000),
   }),
@@ -19,17 +23,19 @@ const schema: SchemaOf<ServerConfig> = object({
 });
 
 const validate = (conf: unknown): ServerConfig => {
-  return schema.cast(conf, { stripUnknown: true });
+  return schema.validateSync(conf, { stripUnknown: true });
 };
 
 export const SERVER_CONFIG = 'server';
 
+const CONFIG_FILE = 'server.config.yaml';
 const ServerConfigFactory = registerAs(SERVER_CONFIG, (): ServerConfig => {
-  return validate({
-    delay: process.env.DELAY,
-    http: { port: process.env.HTTP_PORT },
-    tcp: { host: process.env.TCP_HOST, port: process.env.TCP_PORT },
-  });
+  let conf: unknown = {};
+  const path = resolve(CONFIG_FILE);
+  if (existsSync(path)) {
+    conf = (yaml.load(readFileSync(path, 'utf8')) as any)?.server || {};
+  }
+  return validate(conf);
 });
 
 export default ServerConfigFactory;

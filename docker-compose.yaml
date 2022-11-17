@@ -5,7 +5,7 @@ services:
     build: ./packages/master
     volumes:
       - "./server.config.yaml:/usr/src/replicated-log/server.config.yaml"
-      - "./slaves.config.yaml:/usr/src/replicated-log/slaves.config.yaml"
+      - "./slave-services.config.yaml:/usr/src/replicated-log/slave-services.config.yaml"
     ports:
       - "3000:3000"
     depends_on:
@@ -13,19 +13,13 @@ services:
       - slave-2
   slave-1:
     build: ./packages/slave
-    environment:
-      - DELAY=-1
-      - HTTP_PORT=3000
-      - TCP_HOST=slave-1
-      - TCP_PORT=3001
+    volumes:
+      - "./slave-1.config.yaml:/usr/src/replicated-log/server.config.yaml"
     ports:
       - "3001:3000"
   slave-2:
     build: ./packages/slave
-    environment:
-      - DELAY=1000
-      - HTTP_PORT=3000
-      - TCP_HOST=slave-2
-      - TCP_PORT=3001
+    volumes:
+      - "./slave-2.config.yaml:/usr/src/replicated-log/server.config.yaml"
     ports:
       - "3002:3000"
