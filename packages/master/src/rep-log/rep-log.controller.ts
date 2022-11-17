@@ -1,11 +1,13 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
   HttpCode,
   Param,
   ParseIntPipe,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
@@ -20,9 +22,10 @@ export class RepLogController {
   @Post()
   @HttpCode(201)
   public append(
+    @Query('w', new DefaultValuePipe(1), ParseIntPipe) writeConcern: number,
     @Body() msg: RepLogMsgDto,
   ): Observable<Record<'id', RepLogMsgId>> {
-    return this.RepLog.append(msg);
+    return this.RepLog.append(writeConcern, msg);
   }
 
   @Get()
