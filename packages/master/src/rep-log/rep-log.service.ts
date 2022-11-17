@@ -25,6 +25,7 @@ import { RepLogSlave } from './rep-log-slave.service';
 @Injectable()
 export class RepLogService {
   private counter = 0;
+
   private readonly list: RepLogMsgList = [];
   private readonly logger = new Logger(RepLogService.name);
 

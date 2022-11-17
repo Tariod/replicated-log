@@ -9,14 +9,16 @@ import { RepLogMsgDto } from './rep-log-msg.dto';
 
 @Injectable()
 export class RepLogService {
+  private delay = 0;
+
   private readonly list: RepLogMsgList = [];
   private readonly logger = new Logger(RepLogService.name);
 
   constructor(private config: ConfigService) {}
 
   public append(dto: RepLogMsgDto): Promise<Record<'id', RepLogMsgId>> {
-    const { delay: msec } = this.config.get<ServerConfig>(SERVER_CONFIG);
-    return delay(msec, () => {
+    const { delays } = this.config.get<ServerConfig>(SERVER_CONFIG);
+    return delay(delays[this.delay++ % delays.length], () => {
       const msg: RepLogMsg = { ...dto };
       this.list.push(msg);
       this.logger.debug(`Message with id ${msg.id} has been added.`);

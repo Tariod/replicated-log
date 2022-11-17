@@ -1,0 +1,6 @@
+server:
+  http:
+    port: 3000
+  tcp:
+    host: slave-1
+    port: 3001
