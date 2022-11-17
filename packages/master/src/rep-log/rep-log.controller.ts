@@ -9,8 +9,8 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
-import { RepLogMsgDto } from './rep-log-msg.dto';
 import { RepLogMsg, RepLogMsgId, RepLogMsgList } from './rep-log-msg.interface';
+import { RepLogMsgDto } from './rep-log-msg.dto';
 import { RepLogService } from './rep-log.service';
 
 @Controller()

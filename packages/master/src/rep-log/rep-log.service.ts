@@ -1,12 +1,12 @@
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Observable, map, merge, of, tap, throwError } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
-import { Observable, merge, of, tap, map, throwError } from 'rxjs';
 
 import { then } from '../utils';
 
-import { RepLogMsgDto } from './rep-log-msg.dto';
 import { RepLogMsg, RepLogMsgId, RepLogMsgList } from './rep-log-msg.interface';
 import { REP_LOG_SLAVE_CLIENTS } from './rep-log.constants';
+import { RepLogMsgDto } from './rep-log-msg.dto';
 
 @Injectable()
 export class RepLogService {

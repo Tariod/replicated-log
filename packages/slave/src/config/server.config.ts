@@ -1,5 +1,5 @@
+import { SchemaOf, number, object, string } from 'yup';
 import { registerAs } from '@nestjs/config';
-import { object, number, string, SchemaOf } from 'yup';
 
 export interface ServerConfig {
   delay: number;
