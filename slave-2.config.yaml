@@ -1,7 +1,7 @@
 server:
   delays:
+    - 5000
     - 1000
-    - 1500
   http:
     port: 3000
   tcp:

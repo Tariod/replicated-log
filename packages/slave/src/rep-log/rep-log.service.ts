@@ -5,16 +5,19 @@ import { SERVER_CONFIG, ServerConfig } from '../config/server.config';
 import { delay } from '../utils';
 
 import { RepLogMsg, RepLogMsgId, RepLogMsgList } from './rep-log-msg.interface';
+import { RepLogListService } from './rep-log-list.service';
 import { RepLogMsgDto } from './rep-log-msg.dto';
 
 @Injectable()
 export class RepLogService {
   private delay = 0;
 
-  private readonly list: RepLogMsgList = [];
   private readonly logger = new Logger(RepLogService.name);
 
-  constructor(private config: ConfigService) {}
+  constructor(
+    private readonly config: ConfigService,
+    private readonly list: RepLogListService,
+  ) {}
 
   public append(dto: RepLogMsgDto): Promise<Record<'id', RepLogMsgId>> {
     const { delays } = this.config.get<ServerConfig>(SERVER_CONFIG);
@@ -27,11 +30,12 @@ export class RepLogService {
   }
 
   public get(): RepLogMsgList {
-    return this.list;
+    return this.list.list();
   }
 
   public getOne(id: RepLogMsgId): RepLogMsg {
-    const msg = id > 0 ? this.list.find((msg) => msg.id === id) : undefined;
+    const msg =
+      id > 0 ? this.list.list().find((msg) => msg.id === id) : undefined;
     if (!msg) {
       throw new NotFoundException(`Message with id ${id} not found.`);
     }
