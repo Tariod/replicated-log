@@ -1,5 +1,7 @@
 slaves:
-  - host: slave-1
+  - label: slave-1 
+    host: slave-1
     port: 3001
-  - host: slave-2
+  - label: slave-2
+    host: slave-2
     port: 3001
