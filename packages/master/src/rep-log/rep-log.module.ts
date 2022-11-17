@@ -9,6 +9,7 @@ import SlavesConfigFactory, {
 
 import { REP_LOG_SLAVES } from './rep-log.constants';
 import { RepLogController } from './rep-log.controller';
+import { RepLogListService } from './rep-log-list.service';
 import { RepLogService } from './rep-log.service';
 import { RepLogSlave } from './rep-log-slave.service';
 
@@ -33,6 +34,7 @@ import { RepLogSlave } from './rep-log-slave.service';
       },
       inject: [ConfigService],
     },
+    RepLogListService,
     RepLogService,
   ],
 })
