@@ -1,1 +1,1 @@
-export const REP_LOG_SLAVE_CLIENTS = 'REP_LOG_SLAVE_CLIENTS';
+export const REP_LOG_SLAVES = 'REP_LOG_SLAVES';

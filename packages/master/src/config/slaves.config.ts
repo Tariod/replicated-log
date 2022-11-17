@@ -5,6 +5,7 @@ import * as yaml from 'js-yaml';
 import { registerAs } from '@nestjs/config';
 
 export interface SlaveConfig {
+  label: string;
   host: string;
   port: number;
 }
