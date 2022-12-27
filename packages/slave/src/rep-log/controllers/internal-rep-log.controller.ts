@@ -1,9 +1,9 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 
-import { RepLogMsgDto } from './rep-log-msg.dto';
-import { RepLogMsgId } from './rep-log-msg.interface';
-import { RepLogService } from './rep-log.service';
+import { RepLogMsgDto } from '../dtos';
+import { RepLogMsgId } from '../types';
+import { RepLogService } from '../services';
 
 @Controller()
 export class InternalRepLogController {

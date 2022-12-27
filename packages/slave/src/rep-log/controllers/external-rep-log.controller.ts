@@ -1,7 +1,7 @@
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 
-import { RepLogMsg, RepLogMsgList } from './rep-log-msg.interface';
-import { RepLogService } from './rep-log.service';
+import { RepLogMsg, RepLogMsgList } from '../types';
+import { RepLogService } from '../services';
 
 @Controller()
 export class ExternalRepLogController {

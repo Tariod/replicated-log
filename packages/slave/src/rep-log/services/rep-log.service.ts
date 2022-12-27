@@ -1,12 +1,12 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { SERVER_CONFIG, ServerConfig } from '../config/server.config';
-import { delay } from '../utils';
+import { RepLogMsg, RepLogMsgId, RepLogMsgList } from '../types';
+import { SERVER_CONFIG, ServerConfig } from '../../config/server.config';
+import { RepLogMsgDto } from '../dtos';
+import { delay } from '../../utils';
 
-import { RepLogMsg, RepLogMsgId, RepLogMsgList } from './rep-log-msg.interface';
 import { RepLogListService } from './rep-log-list.service';
-import { RepLogMsgDto } from './rep-log-msg.dto';
 
 @Injectable()
 export class RepLogService {
