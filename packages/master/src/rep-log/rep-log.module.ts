@@ -7,11 +7,9 @@ import SlavesConfigFactory, {
   SlavesConfig,
 } from '../config/slaves.config';
 
+import { RepLogListService, RepLogService, RepLogSlave } from './services';
 import { REP_LOG_SLAVES } from './rep-log.constants';
-import { RepLogController } from './rep-log.controller';
-import { RepLogListService } from './rep-log-list.service';
-import { RepLogService } from './rep-log.service';
-import { RepLogSlave } from './rep-log-slave.service';
+import { RepLogController } from './controllers';
 
 @Module({
   imports: [ConfigModule.forFeature(SlavesConfigFactory)],

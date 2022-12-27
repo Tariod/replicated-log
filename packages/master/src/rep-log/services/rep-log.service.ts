@@ -15,12 +15,12 @@ import {
 } from 'rxjs';
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 
-import { then } from '../utils';
+import { RepLogMsg, RepLogMsgId, RepLogMsgList } from '../types';
+import { REP_LOG_SLAVES } from '../rep-log.constants';
+import { RepLogMsgDto } from '../dtos';
+import { then } from '../../utils';
 
-import { RepLogMsg, RepLogMsgId, RepLogMsgList } from './rep-log-msg.interface';
-import { REP_LOG_SLAVES } from './rep-log.constants';
 import { RepLogListService } from './rep-log-list.service';
-import { RepLogMsgDto } from './rep-log-msg.dto';
 import { RepLogSlave } from './rep-log-slave.service';
 
 @Injectable()

@@ -11,9 +11,9 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
-import { RepLogMsg, RepLogMsgId, RepLogMsgList } from './rep-log-msg.interface';
-import { RepLogMsgDto } from './rep-log-msg.dto';
-import { RepLogService } from './rep-log.service';
+import { RepLogMsg, RepLogMsgId, RepLogMsgList } from '../types';
+import { RepLogMsgDto } from '../dtos';
+import { RepLogService } from '../services';
 
 @Controller()
 export class RepLogController {

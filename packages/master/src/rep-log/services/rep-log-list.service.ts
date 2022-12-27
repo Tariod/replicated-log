@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { OrderedLinkedList } from '../utils';
-
-import { RepLogMsg } from './rep-log-msg.interface';
+import { OrderedLinkedList } from '../../utils';
+import { RepLogMsg } from '../types';
 
 @Injectable()
 export class RepLogListService extends OrderedLinkedList<RepLogMsg> {
