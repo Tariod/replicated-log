@@ -10,7 +10,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = app.get(ConfigService);
-  const { http, tcp } = config.get<ServerConfig>(SERVER_CONFIG);
+  const { debug, http, tcp } = config.get<ServerConfig>(SERVER_CONFIG);
+
+  const log = ['log', 'error', 'warn'] as const;
+  app.useLogger(debug ? [...log, 'debug'] : [...log]);
 
   await app.connectMicroservice({ transport: Transport.TCP, options: tcp });
   await app.startAllMicroservices();

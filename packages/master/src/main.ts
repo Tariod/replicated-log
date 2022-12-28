@@ -9,7 +9,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = app.get(ConfigService);
-  const { port } = config.get<ServerConfig>(SERVER_CONFIG);
+  const { debug, port } = config.get<ServerConfig>(SERVER_CONFIG);
+
+  const log = ['log', 'error', 'warn'] as const;
+  app.useLogger(debug ? [...log, 'debug'] : [...log]);
 
   await app.listen(port);
 }

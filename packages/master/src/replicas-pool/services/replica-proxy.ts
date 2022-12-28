@@ -11,10 +11,12 @@ import {
   mergeMap,
   of,
   repeat,
+  tap,
   timeout,
 } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
+import { Logger } from '@nestjs/common';
 
 import { SERVER_CONFIG, ServerConfig } from '../../config/server.config';
 
@@ -29,6 +31,8 @@ export class ReplicaProxy {
   private readonly heartbeat: Observable<HealthStatus>;
 
   private readonly $health: BehaviorSubject<HealthStatus>;
+
+  private readonly logger = new Logger(ReplicaProxy.name);
 
   constructor(
     public readonly label: string,
@@ -45,8 +49,16 @@ export class ReplicaProxy {
     this.heartbeat = interval(HEARTBEAT_INTERVAL).pipe(
       mergeMap(() =>
         this.client
+          // Under the hood, NestJS, for each sent message over ClientProxy,
+          // adds an identifier with its response observable to the map.
+          // So we don't need to provide id for heartbeats.
           .send<HeartbeatMsg<PingPong.PONG>>({ cmd: 'ping' }, ping)
           .pipe(
+            tap(() =>
+              this.logger.debug(
+                `Message ${ping.message} sent to ${this.label}.`,
+              ),
+            ),
             timeout({ first: HEARTBEAT_THRESHOLD }),
             catchError(() => EMPTY),
           ),
@@ -58,6 +70,11 @@ export class ReplicaProxy {
       }),
       repeat(),
       distinctUntilChanged(),
+      tap((status) =>
+        this.logger.log(
+          `The status of ${this.label} has changed to ${status}.`,
+        ),
+      ),
     );
 
     this.$health = new BehaviorSubject<HealthStatus>(HealthStatus.HEALTHY);

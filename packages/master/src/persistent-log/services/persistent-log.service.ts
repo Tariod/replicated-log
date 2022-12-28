@@ -110,7 +110,7 @@ export class PersistentLogService {
   > {
     return tap({
       next: ({ proxy, ack }) =>
-        this.logger.debug(
+        this.logger.log(
           `Message with id ${ack.id} appending has been acknowledged from ${proxy.label}.`,
         ),
     });
@@ -121,7 +121,7 @@ export class PersistentLogService {
   ): MonoTypeOperatorFunction<PersistentLogMsg> {
     return tap({
       complete: () =>
-        this.logger.debug(`Message with id ${msg.id} has been added.`),
+        this.logger.log(`Message with id ${msg.id} has been added.`),
     });
   }
 }

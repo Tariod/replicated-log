@@ -2,16 +2,18 @@ import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 
 import * as yaml from 'js-yaml';
-import { SchemaOf, array, number, object, string } from 'yup';
+import { SchemaOf, array, boolean, number, object, string } from 'yup';
 import { registerAs } from '@nestjs/config';
 
 export interface ServerConfig {
+  debug: boolean;
   delays: number[];
   http: { port: number };
   tcp: { host: string; port: number };
 }
 
 const schema: SchemaOf<ServerConfig> = object({
+  debug: boolean().default(true),
   delays: array(number().positive().integer()).ensure(),
   http: object({
     port: number().default(3000),

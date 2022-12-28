@@ -1,3 +1,4 @@
 server:
+  debug: false
   port: 3000
   heartbeat_interval: 1000

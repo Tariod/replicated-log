@@ -1,4 +1,5 @@
 server:
+  debug: true
   delays:
     - 1000
     - 1500

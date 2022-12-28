@@ -2,15 +2,17 @@ import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 
 import * as yaml from 'js-yaml';
-import { SchemaOf, number, object } from 'yup';
+import { SchemaOf, boolean, number, object } from 'yup';
 import { registerAs } from '@nestjs/config';
 
 export interface ServerConfig {
+  debug: boolean;
   port: number;
   heartbeat_interval: number;
 }
 
 const schema: SchemaOf<ServerConfig> = object({
+  debug: boolean().default(true),
   port: number().default(3000),
   heartbeat_interval: number().positive().default(1000),
 });

@@ -30,7 +30,7 @@ export class PersistentLogService {
     return delay(delays[this.delay++ % delays.length], () => {
       const msg: PersistentLogMsg = { ...dto };
       this.list.push(msg);
-      this.logger.debug(`Message with id ${msg.id} has been added.`);
+      this.logger.log(`Message with id ${msg.id} has been added.`);
       return { id: msg.id };
     });
   }
