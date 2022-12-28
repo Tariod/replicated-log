@@ -8,6 +8,7 @@ import {
   of,
   pipe,
   raceWith,
+  retry,
   share,
   take,
   tap,
@@ -28,6 +29,8 @@ import { PersistentLogMsgDto } from '../dtos';
 import { then } from '../../utils';
 
 import { PersistentLogListService } from './persistent-log-list.service';
+
+const RETRY_DELAY = 1000;
 
 @Injectable()
 export class PersistentLogService {
@@ -85,6 +88,7 @@ export class PersistentLogService {
       this.replicasPool.proxies.length,
     );
     return pipe(
+      retry({ delay: RETRY_DELAY }),
       share({
         resetOnError: false,
         resetOnComplete: false,
