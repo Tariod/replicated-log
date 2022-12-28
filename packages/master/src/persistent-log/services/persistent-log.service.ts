@@ -3,6 +3,7 @@ import {
   MonoTypeOperatorFunction,
   Observable,
   OperatorFunction,
+  concatMap,
   map,
   merge,
   of,
@@ -14,7 +15,12 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 
 import {
   PersistentLogMsg,
@@ -63,20 +69,29 @@ export class PersistentLogService {
   ): Observable<Record<'id', PersistentLogMsgId>> {
     const pattern = { cmd: 'append' };
     const msg: PersistentLogMsg = { id: this.counter++, ...dto };
+    return this.replicasPool.quorum().pipe(
+      concatMap((quorum) => {
+        if (!quorum) {
+          throw new InternalServerErrorException(
+            "Replicated Log doesn't have a quorum.",
+          );
+        }
 
-    const replication = merge(
-      ...this.replicasPool.proxies.map((proxy) =>
-        proxy
-          .send<Record<'id', PersistentLogMsg>>(pattern, msg)
-          .pipe(map((ack) => ({ proxy, ack }))),
-      ),
-    );
+        const replication = merge(
+          ...this.replicasPool.proxies.map((proxy) =>
+            proxy
+              .send<Record<'id', PersistentLogMsg>>(pattern, msg)
+              .pipe(map((ack) => ({ proxy, ack }))),
+          ),
+        );
 
-    return replication.pipe(
-      this.logReplicaAppendAck(),
-      this.awaitReplicasAppendAcks(writeConcern),
-      this.commitAppend(msg),
-      map((msg) => ({ id: msg.id })),
+        return replication.pipe(
+          this.logReplicaAppendAck(),
+          this.awaitReplicasAppendAcks(writeConcern),
+          this.commitAppend(msg),
+          map((msg) => ({ id: msg.id })),
+        );
+      }),
     );
   }
 
