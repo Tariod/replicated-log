@@ -19,7 +19,7 @@ import {
 import { PersistentLogMsgDto } from '../dtos';
 import { PersistentLogService } from '../services';
 
-@Controller()
+@Controller('/persistent-log')
 export class PersistentLogController {
   constructor(private readonly PersistentLog: PersistentLogService) {}
 

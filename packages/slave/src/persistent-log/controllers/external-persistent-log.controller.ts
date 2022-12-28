@@ -3,7 +3,7 @@ import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { PersistentLogMsg, PersistentLogMsgList } from '../types';
 import { PersistentLogService } from '../services';
 
-@Controller()
+@Controller('/persistent-log')
 export class ExternalPersistentLogController {
   constructor(private readonly PersistentLog: PersistentLogService) {}
 

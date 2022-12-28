@@ -10,12 +10,14 @@ import ServerConfigFactory from '../config/server.config';
 
 import { ReplicaProxy, ReplicasPoolService } from './services';
 import { REPLICAS_POOL_PROXIES } from './replicas-pool.constants';
+import { ReplicasPoolController } from './controllers';
 
 @Module({
   imports: [
     ConfigModule.forFeature(ReplicasConfigFactory),
     ConfigModule.forFeature(ServerConfigFactory),
   ],
+  controllers: [ReplicasPoolController],
   providers: [
     {
       provide: REPLICAS_POOL_PROXIES,
