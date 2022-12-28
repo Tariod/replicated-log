@@ -90,7 +90,10 @@ export class ReplicaProxy {
     data: TInput,
   ): Observable<TResult> {
     return concat(
-      this.health.pipe(first((status) => status === HealthStatus.HEALTHY)),
+      this.health.pipe(
+        first((status) => status === HealthStatus.HEALTHY),
+        mergeMap(() => EMPTY),
+      ),
       this.client.send(pattern, data),
     );
   }
