@@ -4,13 +4,13 @@ import { Module } from '@nestjs/common';
 import ServerConfigFactory from './config/server.config';
 
 import { HeartbeatModule } from './heartbeat';
-import { RepLogModule } from './rep-log';
+import { PersistentLogModule } from './persistent-log';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ load: [ServerConfigFactory] }),
     HeartbeatModule,
-    RepLogModule,
+    PersistentLogModule,
   ],
   controllers: [],
   providers: [],
