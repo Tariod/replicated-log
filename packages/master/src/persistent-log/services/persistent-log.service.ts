@@ -36,7 +36,7 @@ import { then } from '../../utils';
 
 import { PersistentLogListService } from './persistent-log-list.service';
 
-const RETRY_DELAY = 1000;
+const RETRY_DELAY = 5000;
 
 @Injectable()
 export class PersistentLogService {
@@ -79,9 +79,10 @@ export class PersistentLogService {
 
         const replication = merge(
           ...this.replicasPool.proxies.map((proxy) =>
-            proxy
-              .send<Record<'id', PersistentLogMsg>>(pattern, msg)
-              .pipe(map((ack) => ({ proxy, ack }))),
+            proxy.send<Record<'id', PersistentLogMsg>>(pattern, msg).pipe(
+              map((ack) => ({ proxy, ack })),
+              retry({ delay: RETRY_DELAY }),
+            ),
           ),
         );
 
@@ -103,7 +104,6 @@ export class PersistentLogService {
       this.replicasPool.proxies.length,
     );
     return pipe(
-      retry({ delay: RETRY_DELAY }),
       share({
         resetOnError: false,
         resetOnComplete: false,

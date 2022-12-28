@@ -8,6 +8,7 @@ import { registerAs } from '@nestjs/config';
 export interface ServerConfig {
   debug: boolean;
   delays: number[];
+  error_threshold: number;
   http: { port: number };
   tcp: { host: string; port: number };
 }
@@ -15,6 +16,7 @@ export interface ServerConfig {
 const schema: SchemaOf<ServerConfig> = object({
   debug: boolean().default(true),
   delays: array(number().positive().integer()).ensure(),
+  error_threshold: number().min(0).max(1).default(0),
   http: object({
     port: number().default(3000),
   }),

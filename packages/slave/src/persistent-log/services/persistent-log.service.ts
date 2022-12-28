@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import {
@@ -26,7 +31,13 @@ export class PersistentLogService {
   public append(
     dto: PersistentLogMsgDto,
   ): Promise<Record<'id', PersistentLogMsgId>> {
-    const { delays } = this.config.get<ServerConfig>(SERVER_CONFIG);
+    const { delays, error_threshold } =
+      this.config.get<ServerConfig>(SERVER_CONFIG);
+
+    if (Math.random() < error_threshold) {
+      throw new InternalServerErrorException();
+    }
+
     return delay(delays[this.delay++ % delays.length], () => {
       const msg: PersistentLogMsg = { ...dto };
       this.list.push(msg);
