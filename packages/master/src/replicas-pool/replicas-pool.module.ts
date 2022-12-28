@@ -6,12 +6,16 @@ import ReplicasConfigFactory, {
   REPLICAS_CONFIG,
   ReplicasConfig,
 } from '../config/replicas.config';
+import ServerConfigFactory from '../config/server.config';
 
 import { ReplicaProxy, ReplicasPoolService } from './services';
 import { REPLICAS_POOL_PROXIES } from './replicas-pool.constants';
 
 @Module({
-  imports: [ConfigModule.forFeature(ReplicasConfigFactory)],
+  imports: [
+    ConfigModule.forFeature(ReplicasConfigFactory),
+    ConfigModule.forFeature(ServerConfigFactory),
+  ],
   providers: [
     {
       provide: REPLICAS_POOL_PROXIES,
@@ -21,6 +25,7 @@ import { REPLICAS_POOL_PROXIES } from './replicas-pool.constants';
           ({ label, host, port }) =>
             new ReplicaProxy(
               label,
+              config,
               ClientProxyFactory.create({
                 transport: Transport.TCP,
                 options: { host, port },

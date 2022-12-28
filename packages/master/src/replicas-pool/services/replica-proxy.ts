@@ -14,6 +14,9 @@ import {
   timeout,
 } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
+import { ConfigService } from '@nestjs/config';
+
+import { SERVER_CONFIG, ServerConfig } from '../../config/server.config';
 
 import {
   HealthStatus,
@@ -22,11 +25,6 @@ import {
   ReplicaProxySendPattern,
 } from '../types';
 
-// TODO: add to config
-const HEARTBEAT_INTERVAL = 1000;
-const HEARTBEAT_THRESHOLD = HEARTBEAT_INTERVAL * 2;
-const MISSING_HEARTBEATS = HEARTBEAT_THRESHOLD * 3;
-
 export class ReplicaProxy {
   private readonly heartbeat: Observable<HealthStatus>;
 
@@ -34,8 +32,14 @@ export class ReplicaProxy {
 
   constructor(
     public readonly label: string,
+    private readonly config: ConfigService,
     private readonly client: ClientProxy,
   ) {
+    const { heartbeat_interval: HEARTBEAT_INTERVAL } =
+      config.get<ServerConfig>(SERVER_CONFIG);
+    const HEARTBEAT_THRESHOLD = HEARTBEAT_INTERVAL * 2;
+    const MISSING_HEARTBEATS = HEARTBEAT_THRESHOLD * 3;
+
     const ping: HeartbeatMsg<PingPong.PING> = { message: PingPong.PING };
 
     this.heartbeat = interval(HEARTBEAT_INTERVAL).pipe(
