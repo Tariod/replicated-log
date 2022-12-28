@@ -1,39 +1,16 @@
-import { ClientProxyFactory, Transport } from '@nestjs/microservices';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 
-import SlavesConfigFactory, {
-  SLAVES_CONFIG,
-  SlavesConfig,
-} from '../config/slaves.config';
+import { ReplicasPoolModule } from '../replicas-pool';
+import SlavesConfigFactory from '../config/slaves.config';
 
-import { RepLogListService, RepLogService, RepLogSlave } from './services';
-import { REP_LOG_SLAVES } from './rep-log.constants';
+import { RepLogListService, RepLogService } from './services';
 import { RepLogController } from './controllers';
 
+// TODO: rename
 @Module({
-  imports: [ConfigModule.forFeature(SlavesConfigFactory)],
+  imports: [ConfigModule.forFeature(SlavesConfigFactory), ReplicasPoolModule],
   controllers: [RepLogController],
-  providers: [
-    {
-      provide: REP_LOG_SLAVES,
-      useFactory: (config: ConfigService) => {
-        const slaves = config.get<SlavesConfig>(SLAVES_CONFIG);
-        return slaves.map(
-          ({ label, host, port }) =>
-            new RepLogSlave(
-              label,
-              ClientProxyFactory.create({
-                transport: Transport.TCP,
-                options: { host, port },
-              }),
-            ),
-        );
-      },
-      inject: [ConfigService],
-    },
-    RepLogListService,
-    RepLogService,
-  ],
+  providers: [RepLogListService, RepLogService],
 })
 export class RepLogModule {}

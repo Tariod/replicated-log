@@ -13,15 +13,17 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 import { RepLogMsg, RepLogMsgId, RepLogMsgList } from '../types';
-import { REP_LOG_SLAVES } from '../rep-log.constants';
+import {
+  ReplicaProxy,
+  ReplicasPoolService,
+} from '../../replicas-pool/services';
 import { RepLogMsgDto } from '../dtos';
 import { then } from '../../utils';
 
 import { RepLogListService } from './rep-log-list.service';
-import { RepLogSlave } from './rep-log-slave.service';
 
 @Injectable()
 export class RepLogService {
@@ -31,8 +33,7 @@ export class RepLogService {
 
   constructor(
     private readonly list: RepLogListService,
-    @Inject(REP_LOG_SLAVES)
-    private readonly slaves: RepLogSlave[],
+    private readonly replicasPool: ReplicasPoolService,
   ) {}
 
   public get(): Observable<RepLogMsgList> {
@@ -57,10 +58,10 @@ export class RepLogService {
     const msg: RepLogMsg = { id: this.counter++, ...dto };
 
     const replication = merge(
-      ...this.slaves.map((slave) =>
-        slave.client
+      ...this.replicasPool.proxies.map((proxy) =>
+        proxy
           .send<Record<'id', RepLogMsg>>(pattern, msg)
-          .pipe(map((ack) => ({ slave, ack }))),
+          .pipe(map((ack) => ({ proxy, ack }))),
       ),
     );
 
@@ -75,7 +76,10 @@ export class RepLogService {
   private awaitSlavesAppendAcks<T>(
     writeConcern: number,
   ): MonoTypeOperatorFunction<T> {
-    const acks = Math.min(Math.max(writeConcern - 1, 0), this.slaves.length);
+    const acks = Math.min(
+      Math.max(writeConcern - 1, 0),
+      this.replicasPool.proxies.length,
+    );
     return pipe(
       share({
         resetOnError: false,
@@ -95,12 +99,12 @@ export class RepLogService {
   }
 
   private logSlaveAppendAck(): MonoTypeOperatorFunction<
-    Record<'slave', RepLogSlave> & Record<'ack', Record<'id', RepLogMsg>>
+    Record<'proxy', ReplicaProxy> & Record<'ack', Record<'id', RepLogMsg>>
   > {
     return tap({
-      next: ({ slave, ack }) =>
+      next: ({ proxy, ack }) =>
         this.logger.debug(
-          `Message with id ${ack.id} appending has been acknowledged from ${slave.label}.`,
+          `Message with id ${ack.id} appending has been acknowledged from ${proxy.label}.`,
         ),
     });
   }
