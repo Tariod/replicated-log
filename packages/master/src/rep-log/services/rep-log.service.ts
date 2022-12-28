@@ -66,14 +66,14 @@ export class RepLogService {
     );
 
     return replication.pipe(
-      this.logSlaveAppendAck(),
-      this.awaitSlavesAppendAcks(writeConcern),
+      this.logReplicaAppendAck(),
+      this.awaitReplicasAppendAcks(writeConcern),
       this.commitAppend(msg),
       map((msg) => ({ id: msg.id })),
     );
   }
 
-  private awaitSlavesAppendAcks<T>(
+  private awaitReplicasAppendAcks<T>(
     writeConcern: number,
   ): MonoTypeOperatorFunction<T> {
     const acks = Math.min(
@@ -98,7 +98,7 @@ export class RepLogService {
     );
   }
 
-  private logSlaveAppendAck(): MonoTypeOperatorFunction<
+  private logReplicaAppendAck(): MonoTypeOperatorFunction<
     Record<'proxy', ReplicaProxy> & Record<'ack', Record<'id', RepLogMsg>>
   > {
     return tap({

@@ -2,22 +2,21 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 
-import SlavesConfigFactory, {
-  SLAVES_CONFIG,
-  SlavesConfig,
-} from '../config/slaves.config';
+import ReplicasConfigFactory, {
+  REPLICAS_CONFIG,
+  ReplicasConfig,
+} from '../config/replicas.config';
 
 import { ReplicaProxy, ReplicasPoolService } from './services';
 import { REPLICAS_POOL_PROXIES } from './replicas-pool.constants';
 
 @Module({
-  imports: [ConfigModule.forFeature(SlavesConfigFactory)],
+  imports: [ConfigModule.forFeature(ReplicasConfigFactory)],
   providers: [
     {
       provide: REPLICAS_POOL_PROXIES,
       useFactory: (config: ConfigService) => {
-        // TODO: rename
-        const replicas = config.get<SlavesConfig>(SLAVES_CONFIG);
+        const replicas = config.get<ReplicasConfig>(REPLICAS_CONFIG);
         return replicas.map(
           ({ label, host, port }) =>
             new ReplicaProxy(

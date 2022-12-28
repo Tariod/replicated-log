@@ -5,7 +5,7 @@ services:
     build: ./packages/master
     volumes:
       - "./server.config.yaml:/usr/src/replicated-log/server.config.yaml"
-      - "./slave-services.config.yaml:/usr/src/replicated-log/slave-services.config.yaml"
+      - "./replicas-proxies.config.yaml:/usr/src/replicated-log/replicas-proxies.config.yaml"
     ports:
       - "3000:3000"
     depends_on:
